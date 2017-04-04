@@ -1,0 +1,51 @@
+#!/bin/bash
+echo "Dia - Funtoo Linux diagnostic script"
+echo ""
+
+echo "please mount your boot partition at /boot to allow the script to"
+echo "gather info about your bootloader configuration." 
+echo ""
+
+echo "The script uplodads data to a Funtoo hosted pastebin."
+echo "Please be patient while the script gathers data."
+echo "The uploaded data is wiped after 30 days."
+echo ""
+
+echo "Gathering general system data" 
+echo ""
+
+GENERAL_SYSTEM="emerge --info: $(emerge --info | mpaste)\n"
+GENERAL_SYSTEM+="epro list: $(epro list | mpaste)\n"
+GENERAL_SYSTEM+="make.conf: $(cat /etc/portage/make.conf | mpaste)\n"
+GENERAL_SYSTEM+="package.use: $(cat /etc/portage/package.use | mpaste)\n"
+GENERAL_SYSTEM+="world file: $(cat /var/lib/portage/world | mpaste)\n"
+GENERAL_SYSTEM+="tail -n 500 emerge.log: $(tail -n 500 /var/log/emerge.log | mpaste)\n"
+
+echo "Gathering hardware data" 
+echo ""
+
+HARDWARE_INFO="lspci -k: $(lspci -k | mpaste)\n"
+HARDWARE_INFO+="dmesg: $(dmesg | mpaste)\n"
+HARDWARE_INFO+="fdisk -l: $(fdisk -l | mpaste)\n"
+HARDWARE_INFO+="lscpu: $(lscpu | mpaste)\n"
+HARDWARE_INFO+="free -m: $(free -m | mpaste)\n"
+HARDWARE_INFO+="/sys/class/net: $(ls /sys/class/net | mpaste)\n"
+
+echo "Gathering kernel info" 
+echo ""
+
+KERNEL_INFO="eselect kernel: $(eselect kernel list | mpaste)\n"
+KERNEL_INFO+="kernel config: $(cat /usr/src/linux/.config | mpaste)\n"
+KERNEL_INFO+="/proc/config.gz: $(cat /proc/config.gz | gunzip | mpaste)\n"
+KERNEL_INFO+="lsmod: $(lsmod | mpaste)\n"
+
+echo "Gathering bootloader info" 
+echo ""
+BOOT_INFO="boot.conf: $(cat /etc/boot.conf | mpaste)\n"
+BOOT_INFO+="grub.cfg: $(cat /boot/grub/grub.cfg | mpaste)\n"
+BOOT_INFO+="ls -la /boot: $(ls -la /boot | mpaste)\n"
+BOOT_INFO+="ls -laR /boot: $(ls -laR /boot | mpaste)\n"
+
+echo "Please share the following link with the support staff:"
+echo ""
+printf "$GENERAL_SYSTEM $HARDWARE_INFO $KERNEL_INFO $BOOT_INFO" | mpaste
