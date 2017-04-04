@@ -1,5 +1,5 @@
 #!/bin/bash
-echo "Dia - Funtoo Linux diagnostic script"
+echo "MDia - Funtoo Linux diagnostic script"
 echo ""
 
 echo "please mount your boot partition at /boot to allow the script to"
